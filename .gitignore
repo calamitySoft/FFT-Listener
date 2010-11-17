@@ -1,0 +1,20 @@
+# .gitignore suggestions from:
+# http://gist.github.com/137348
+#  Note: Comments must exist on their own lines.
+
+# Xcode extras
+*.mode1v3
+## In Project.xcodeproj.  User file, doesn't need to be committed.
+*.pbxuser
+## In Project.xcodeproj.  User file.
+*.perspective
+*.perspectivev3
+*.pyc
+*~.nib/
+build/*
+
+# OSX extras
+.DS_Store
+profile
+Icon
+# The two line breaks before me MUST be respected in order for it to correctly ignore the custom folder icon.
