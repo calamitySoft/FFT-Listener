@@ -663,6 +663,8 @@ static OSStatus	PerformThru(
 		{
 
 			int y, maxY;
+			CGFloat maxInterpVal = .0;	/* logan */
+			CGFloat fftIdx_val = .0;	/* logan */
 			maxY = drawBufferLen;
 			for (y=0; y<maxY; y++)
 			{
@@ -683,12 +685,18 @@ static OSStatus	PerformThru(
 				interpVal = fft_l_fl * (1. - fftIdx_f) + fft_r_fl * fftIdx_f;
 				
 				interpVal = CLAMP(0., interpVal, 1.);
-
+				
+				if (interpVal>maxInterpVal && interpVal<1.) {	/* logan */
+					maxInterpVal=interpVal;
+					fftIdx_val=fftIdx;
+				}
+				
 				drawBuffers[0][y] = (interpVal * 120);
 				
 			}
 			cycleOscilloscopeLines();
 			
+/*			printf("fftIdx_val == %.6f\n", fftIdx_val);	/* logan */
 		}
 		
 	}

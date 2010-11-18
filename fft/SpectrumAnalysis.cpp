@@ -185,10 +185,11 @@ void SpectrumAnalysisDestroy(H_SPECTRUM_ANALYSIS p)
 
 void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, int32_t* outMagSpectrum, bool in_dB)
 {
+	in_dB=false;
 	if(p)
 	{
 		// Apply weigthing window
-		for(uint i = 0; i < p->size; i += 2)
+		for(uint i = 0; i < p->size; i += 1)
 		{
 			int32_t dualCoef = *((int32_t*)(p->weightingWindow + i));
 			p->fftBuffer[i].real   = mul32_16b(inTimeSig[i] << 7, dualCoef) << 1;
@@ -200,7 +201,10 @@ void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, in
 		Radix2IntCplxFFT(p->fftBuffer, p->size, p->twiddleFactors, 1);
 		
 		if(in_dB)
-		{			
+		{		
+			int32_t maxMag = kAdjust0dBLevel;		/* logan */
+			uint maxI = 0;
+			
 			// Calculate magnitude spectrum in dB
 			for(uint i = 0; i < p->size/2; ++i)
 			{
@@ -218,17 +222,65 @@ void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, in
 					squaredMag = kAdjust0dBLevel;
 				}
 
+/*				printf("squaredMag == %i\n", squaredMag);	/* logan */
+
+				if (squaredMag>maxMag) {	/* logan */
+					maxMag = squaredMag;
+					maxI = i;
+				}
+				
 				// log2 -> 10*log10 conversion (Q5.26 x Q2.13)
 				outMagSpectrum[i] = mul32_16b(squaredMag, kLog2ToLog10ScaleFactor) << 1;
+			}
+			
+			printf("maxMag == %i\t\t\tmaxI == %u\n", maxMag, maxI);	/* logan */
+			switch (maxI) {
+				case 55:
+					printf("E4 329Hz\n");
+					break;
+				case 77:
+					printf("A4 440Hz\n");
+					break;
+				case 90:
+					printf("C5 523Hz\n");
+					break;
+				default:
+					break;
 			}
 		}
 		else
 		{
+			int32_t maxMag = kAdjust0dBLevel;		/* logan */
+			uint maxI = 0;
+			
 			// Calculate squared magnitude spectrum
 			for(uint i = 0; i < p->size/2; ++i)
 			{
 				// squared magnitude
-				outMagSpectrum[i] = SquareMag(p->fftBuffer[i].real, p->fftBuffer[i].imag);
+				int32_t squaredMag = SquareMag(p->fftBuffer[i].real, p->fftBuffer[i].imag);
+				
+				
+				if (squaredMag>maxMag) {	/* logan */
+					maxMag = squaredMag;
+					maxI = i;
+				}
+				
+				outMagSpectrum[i] = squaredMag;
+			}
+			
+			printf("maxMag == %i\t\t\tmaxI == %u\n", maxMag, maxI);	/* logan */
+			switch (maxI) {
+				case 55:
+					printf("E4 329Hz\n");
+					break;
+				case 77:
+					printf("A4 440Hz\n");
+					break;
+				case 90:
+					printf("C5 523Hz\n");
+					break;
+				default:
+					break;
 			}
 		}
 	}
