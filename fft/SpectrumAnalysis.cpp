@@ -183,9 +183,9 @@ void SpectrumAnalysisDestroy(H_SPECTRUM_ANALYSIS p)
 	}
 }
 
-void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, int32_t* outMagSpectrum, bool in_dB)
+void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, 
+							 int32_t* outMagSpectrum, float_t* outMajorPitch, bool in_dB)
 {
-	in_dB=false;
 	if(p)
 	{
 		// Apply weigthing window
@@ -233,20 +233,12 @@ void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, in
 				outMagSpectrum[i] = mul32_16b(squaredMag, kLog2ToLog10ScaleFactor) << 1;
 			}
 			
-			printf("maxMag == %i\t\t\tmaxI == %u\n", maxMag, maxI);	/* logan */
-			switch (maxI) {
-				case 55:
-					printf("E4 329Hz\n");
-					break;
-				case 77:
-					printf("A4 440Hz\n");
-					break;
-				case 90:
-					printf("C5 523Hz\n");
-					break;
-				default:
-					break;
-			}
+//			printf("maxMag == %i\t\t\tmaxI == %u\n", maxMag, maxI);	/* logan */
+			*outMajorPitch = (float) maxI;
+			
+//			int32_t numRelative = maxI - 77;
+//			float freqAtI = 440.00 * pow(1.059463094359, numRelative);
+//			printf("freqAtI == %.2f\n", freqAtI);
 		}
 		else
 		{
@@ -259,28 +251,27 @@ void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, in
 				// squared magnitude
 				int32_t squaredMag = SquareMag(p->fftBuffer[i].real, p->fftBuffer[i].imag);
 				
-				
 				if (squaredMag>maxMag) {	/* logan */
 					maxMag = squaredMag;
 					maxI = i;
 				}
 				
 				outMagSpectrum[i] = squaredMag;
-			}
-			
-			printf("maxMag == %i\t\t\tmaxI == %u\n", maxMag, maxI);	/* logan */
-			switch (maxI) {
-				case 55:
-					printf("E4 329Hz\n");
-					break;
-				case 77:
-					printf("A4 440Hz\n");
-					break;
-				case 90:
-					printf("C5 523Hz\n");
-					break;
-				default:
-					break;
+				
+				printf("maxMag == %i\t\t\tmaxI == %u\n", maxMag, maxI);	/* logan */
+				switch (maxI) {
+					case 55:
+						printf("E4 329Hz\n");
+						break;
+					case 77:
+						printf("A4 440Hz\n");
+						break;
+					case 90:
+						printf("C5 523Hz\n");
+						break;
+					default:
+						break;
+				}
 			}
 		}
 	}

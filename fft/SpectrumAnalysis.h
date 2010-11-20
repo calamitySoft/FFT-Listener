@@ -94,7 +94,8 @@ void SpectrumAnalysisDestroy(H_SPECTRUM_ANALYSIS p);
  * the input signal is expected to be in a Q7.24 format in the range [-1, 1) which means that the integer parts should be zero
  * the ouput magnitude spectrum is in Q7.24 format with a range of [-128, 0) when calculated in dB.
  */
-void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, int32_t* outMagSpectrum, bool in_dB);
+void SpectrumAnalysisProcess(H_SPECTRUM_ANALYSIS p, const int32_t* inTimeSig, 
+							 int32_t* outMagSpectrum, float_t* outMajorPitch, bool in_dB);
 
 #ifdef __cplusplus
 }

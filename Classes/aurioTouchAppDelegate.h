@@ -91,11 +91,12 @@ inline double linearInterp(double valA, double valB, double fract)
 	SInt32*						fftData;
 	NSUInteger					fftLength;
 	BOOL						hasNewFFTData;
+	float_t						fftMajorPitch;
 	
 	AudioUnit					rioUnit;
 	int							unitIsRunning;
 	
-	BOOL						initted_oscilloscope, initted_spectrum;
+	BOOL						initted_spectrum;
 	UInt32*						texBitBuffer;
 	CGRect						spectrumRect;
 	

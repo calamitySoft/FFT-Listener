@@ -64,7 +64,7 @@ public:
 	UInt32				GetNumberFrames() { return mNumberFrames; }
 
 	void				GrabAudioData(AudioBufferList *inBL);
-	Boolean				ComputeFFT(int32_t *outFFTData);
+	Boolean				ComputeFFT(int32_t *outFFTData, float_t *outMajorPitch);
 	
 private:
 	volatile int32_t	mNeedsAudioData;

@@ -85,11 +85,11 @@ void FFTBufferManager::GrabAudioData(AudioBufferList *inBL)
 	}
 }
 
-Boolean	FFTBufferManager::ComputeFFT(int32_t *outFFTData)
+Boolean	FFTBufferManager::ComputeFFT(int32_t *outFFTData, float_t *outMajorPitch)
 {
 	if (HasNewAudioData())
 	{
-		SpectrumAnalysisProcess(mSpectrumAnalysis, mAudioBuffer, outFFTData, true);		
+		SpectrumAnalysisProcess(mSpectrumAnalysis, mAudioBuffer, outFFTData, outMajorPitch, true);		
 		OSAtomicDecrement32Barrier(&mHasAudioData);
 		OSAtomicIncrement32Barrier(&mNeedsAudioData);
 		mAudioBufferCurrentIndex = 0;
