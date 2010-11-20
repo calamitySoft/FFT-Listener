@@ -329,7 +329,7 @@ static OSStatus	PerformThru(
 	sampleSizeText = [[UILabel alloc] initWithFrame:CGRectMake(0, -62, 234, 234)];
 	sampleSizeText.textAlignment = UITextAlignmentCenter;
 	sampleSizeText.textColor = [UIColor whiteColor];
-	sampleSizeText.text = @"0000 ms";
+	sampleSizeText.text = @"no mic";
 	sampleSizeText.font = [UIFont boldSystemFontOfSize:36.];
 	sampleSizeText.backgroundColor = [UIColor clearColor];
 	
@@ -371,8 +371,22 @@ static OSStatus	PerformThru(
 	hasNewFFTData = YES;
 }
 
+- (void)clearTextures
+{
+	bzero(texBitBuffer, sizeof(UInt32) * 512);
+	SpectrumLinkedTexture *curTex;
+	
+	for (curTex = firstTex; curTex; curTex = curTex->nextTex)
+	{
+		glBindTexture(GL_TEXTURE_2D, curTex->texName);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, texBitBuffer);
+	}
+}
+
 - (void)drawView:(id)sender forTime:(NSTimeInterval)time
 {
+	// Clear the view
+	glClear(GL_COLOR_BUFFER_BIT);
 	
 	if (fftBufferManager->HasNewAudioData())
 	{
@@ -385,6 +399,51 @@ static OSStatus	PerformThru(
 	}
 	
 	if (hasNewFFTData) sampleSizeText.text = [NSString stringWithFormat:@"%.2f", fftMajorPitch];
+	
+	
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	glEnable(GL_TEXTURE);
+	glEnable(GL_TEXTURE_2D);
+	
+	glPushMatrix();
+	glTranslatef(0., 480., 0.);
+	glRotatef(-90., 0., 0., 1.);
+	glTranslatef(spectrumRect.origin.x + spectrumRect.size.width, spectrumRect.origin.y, 0.);
+	
+	GLfloat quadCoords[] = {
+		0., 0., 
+		SPECTRUM_BAR_WIDTH, 0., 
+		0., 512., 
+		SPECTRUM_BAR_WIDTH, 512., 
+	};
+	
+	GLshort texCoords[] = {
+		0, 0, 
+		1, 0, 
+		0, 1,
+		1, 1, 
+	};
+	
+	glVertexPointer(2, GL_FLOAT, 0, quadCoords);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glTexCoordPointer(2, GL_SHORT, 0, texCoords);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
+	
+	glColor4f(1., 1., 1., 1.);
+	
+	SpectrumLinkedTexture *thisTex;
+	glPushMatrix();
+	for (thisTex = firstTex; thisTex; thisTex = thisTex->nextTex)
+	{
+		glTranslatef(-(SPECTRUM_BAR_WIDTH), 0., 0.);
+		glBindTexture(GL_TEXTURE_2D, thisTex->texName);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
+	glPopMatrix();
+	glPopMatrix();
+	
+	glFlush();
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -399,7 +458,6 @@ static OSStatus	PerformThru(
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	sampleSizeText.text = @"0000 ms";
 }
 
 @end
