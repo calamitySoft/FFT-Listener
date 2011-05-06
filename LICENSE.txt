@@ -1,0 +1,20 @@
+The Software License - CalamitySoft
+
+Copyright (c) 2010-2011, CalamitySoft
+
+This Software and its Content are proprietary and protected by national and
+international copyright and trademark laws, and may not be publicly
+distributed for free or for profit by anyone but the copyright
+owner. "Software" includes all source code and associated documentation files. "Content" includes but is not limited to the art, sound
+effects, music, and anything covered by national and internation
+copyright and trademark laws.
+
+Thank you and have fun!
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
